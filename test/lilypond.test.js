@@ -717,15 +717,3 @@ describe('get empty', () => {
     expect(lily.retEmpty()).toEqual("")
   })
 })
-
-describe('computeOctaveTotal', () => {
-  test('when obj[0][0]=="R"', () => {
-    let obj = [["R"]]
-    expect(lily.computeFoundNotes(obj, 0)).toEqual(0)
-  })
-
-  test('when obj!="object"', () => {
-    let obj = [["12345"]]
-    expect(lily.computeFoundNotes(obj)).toEqual(5)
-  })
-})
