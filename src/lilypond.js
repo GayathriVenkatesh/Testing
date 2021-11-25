@@ -681,6 +681,10 @@ const LILYPONDHEADER =
         ];
     }
 
+    function retEmpty(){
+        return "";
+    }
+
     const saveLilypondOutput = function (activity) {
 
         //.TRANS Animal names used in Lilypond output
@@ -830,11 +834,11 @@ const LILYPONDHEADER =
 
                     activity.logo.notationOutput += "\n}\n\n";
 
-                    let final = "";
-                    let firstPart = "";
-                    let secondPart = "";
-                    let part1 = "";
-                    let part2 = "";
+                    let final = retEmpty();
+                    let firstPart = retEmpty();
+                    let secondPart = retEmpty();
+                    let part1 = retEmpty();
+                    let part2 = retEmpty();
                     let done = 0;
                     const n = instrumentName.indexOf("_");
 
@@ -1048,4 +1052,4 @@ const LILYPONDHEADER =
 // module.exports = Lily
 // module.exports = LILYPONDHEADER
 
-module.exports = { getLilypondHeader, increment, div, computeCounter, getTupletDuration, getExtendedScale, findKeySignature, computeModeDef, getEmptyString, getArr, getModeDef, getScale, getSong, getObj, __toLilynote, toFraction, processLilypondNotes, saveLilypondOutput, __processTuplet, computeFoundNotes, funcNum, greaterThan, getRodents, getClefs, getNumberNames };
+module.exports = { getLilypondHeader, increment, div, computeCounter, getTupletDuration, getExtendedScale, findKeySignature, computeModeDef, getEmptyString, getArr, getModeDef, getScale, getSong, getObj, __toLilynote, toFraction, processLilypondNotes, saveLilypondOutput, __processTuplet, computeFoundNotes, funcNum, greaterThan, getRodents, getClefs, getNumberNames, retEmpty };
