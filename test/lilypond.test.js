@@ -697,3 +697,17 @@ describe('greaterThan', () => {
     expect(lily.greaterThan(5,5)).toEqual(0)
   })
 })
+
+describe('get functions', () => {
+  test('getRodents', () => {
+    expect(lily.getRodents()).toEqual([("mouse"),("brown rat"),("mole"),("chipmunk"),("red squirrel"),("guinea pig"),("capybara"),("coypu"),("black rat"),("grey squirrel"),("flying squirrel"),("bat")])
+  })
+
+  test('getClefs', () => {
+    expect(lily.getClefs()).toEqual(["treble", "bass", "bass_8", "percussion"])
+  })
+
+  test('getNumberNames', () => {
+    expect(lily.getNumberNames()).toEqual(["zero","one","two","three","four","five","six","seven","eight","nine"])
+  })
+})
