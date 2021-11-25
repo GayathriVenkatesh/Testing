@@ -645,10 +645,8 @@ const LILYPONDHEADER =
         return 0;
     }
 
-    const saveLilypondOutput = function (activity) {
-
-        //.TRANS Animal names used in Lilypond output
-        const RODENTS = [
+    function getRodents(){
+        return [
             ("mouse"),
             ("brown rat"),
             ("mole"),
@@ -662,10 +660,14 @@ const LILYPONDHEADER =
             ("flying squirrel"),
             ("bat")
         ];
+    }
 
-        const CLEFS = ["treble", "bass", "bass_8", "percussion"];
+    function getClefs(){
+        return ["treble", "bass", "bass_8", "percussion"];
+    }
 
-        const NUMBERNAMES = [
+    function getNumberNames(){
+        return [
             "zero",
             "one",
             "two",
@@ -677,6 +679,17 @@ const LILYPONDHEADER =
             "eight",
             "nine"
         ];
+    }
+
+    const saveLilypondOutput = function (activity) {
+
+        //.TRANS Animal names used in Lilypond output
+        const RODENTS = getRodents();
+
+        const CLEFS = getClefs();
+
+        const NUMBERNAMES = getNumberNames();
+        
         let turtleCount = 0;
         const clef = []; // eslint-disable-next-line no-unused-vars
         const freygish = ""; // A place to store custom mode definitions
@@ -1035,4 +1048,4 @@ const LILYPONDHEADER =
 // module.exports = Lily
 // module.exports = LILYPONDHEADER
 
-module.exports = { getLilypondHeader, increment, div, computeCounter, getTupletDuration, getExtendedScale, findKeySignature, computeModeDef, getEmptyString, getArr, getModeDef, getScale, getSong, getObj, __toLilynote, toFraction, processLilypondNotes, saveLilypondOutput, __processTuplet, computeFoundNotes, funcNum, greaterThan };
+module.exports = { getLilypondHeader, increment, div, computeCounter, getTupletDuration, getExtendedScale, findKeySignature, computeModeDef, getEmptyString, getArr, getModeDef, getScale, getSong, getObj, __toLilynote, toFraction, processLilypondNotes, saveLilypondOutput, __processTuplet, computeFoundNotes, funcNum, greaterThan, getRodents, getClefs, getNumberNames };
