@@ -756,11 +756,9 @@ const LILYPONDHEADER =
                     }
                 }
 
-                let temp1 = greaterThan(tNumber,startDrums - 1)
-                let temp2 = greaterThan(noteCount,0)
-                if (temp1 === 1) {
+                if (greaterThan(tNumber,startDrums - 1)) {
                     clef.push("percussion");
-                } else if (temp2 === 1) {
+                } else if (greaterThan(noteCount,0)) {
                     // eslint-disable-next-line no-console
                     console.debug(
                         octaveTotal + " " + noteCount + " " + Math.floor(0.5 + octaveTotal / noteCount)
@@ -792,7 +790,7 @@ const LILYPONDHEADER =
                 let instrumentName = "";
                 let shortInstrumentName = "";
 
-                if (tNumber > startDrums - 1) {
+                if (greaterThan(tNumber,startDrums-1)) {
                     instrumentName = _("drum") + NUMBERNAMES[tNumber - startDrums];
                     instrumentName = instrumentName.replace(/ /g, "").replace(".", "");
                     activity.logo.notationOutput += instrumentName + " = {\n";
@@ -909,14 +907,14 @@ const LILYPONDHEADER =
                 }
 
                 activity.logo.notationOutput += instrumentName.replace(/ /g, "").replace(".", "") + "Voice = ";
-                if (tNumber > startDrums - 1) {
+                if (greaterThan(tNumber,startDrums-1)) {
                     activity.logo.notationOutput += "\\new DrumStaff \\with {\n";
                 } else {
                     activity.logo.notationOutput += "\\new Staff \\with {\n";
                 }
                 activity.logo.notationOutput += '   \\clef "' + last(clef) + '"\n';
                 activity.logo.notationOutput += '   instrumentName = "' + instrumentName + '"\n';
-                if (tNumber > startDrums - 1) {
+                if (greaterThan(tNumber,startDrums-1)) {
                     const num = tNumber - startDrums;
                     // console.debug("shortInstrumentName = d" + num);
                     activity.logo.notationOutput += '   shortInstrumentName = "' + "d" + num + '"\n';
@@ -950,14 +948,11 @@ const LILYPONDHEADER =
             // const i = 0;
             let instrumentName;
             for (const t in activity.logo.notationNotes) {
-                let tNumber = t;
-                if (typeof t === "string") {
-                    tNumber = Number(t);
-                }
+                let tNumber = funcNum(t);
 
                 if (clef[tNumber] === CLEFS[c]) {
                     if (activity.logo.notation.notationStaging[t].length > 0) {
-                        if (tNumber > startDrums - 1) {
+                        if (greaterThan(tNumber,startDrums-1)) {
                             instrumentName = _("drum") + NUMBERNAMES[tNumber - startDrums];
                         } else {
                             if (t in activity.turtles.turtleList) {
@@ -994,14 +989,11 @@ const LILYPONDHEADER =
             const i = 0;
             let instrumentName;
             for (const t in activity.logo.notationNotes) {
-                let tNumber = t;
-                if (typeof t === "string") {
-                    tNumber = Number(t);
-                }
+                let tNumber = funcNum(t);
 
                 if (clef[i] === CLEFS[c]) {
                     if (activity.logo.notation.notationStaging[t].length > 0) {
-                        if (tNumber > startDrums - 1) {
+                        if (greaterThan(tNumber,startDrums-1)) {
                             instrumentName = _("drum") + NUMBERNAMES[tNumber - startDrums];
                         } else {
                             if (t in activity.turtles.turtleList) {
