@@ -649,3 +649,51 @@ describe('__toLilynote', () => {
   })
 
 })
+
+describe('computeFoundNotes', () => {
+  test('when obj[0][0]=="R"', () => {
+    let obj = [["R"]]
+    expect(lily.computeFoundNotes(obj)).toEqual(false)
+  })
+
+  test('when obj!="object"', () => {
+    let obj = []
+    expect(lily.computeFoundNotes(obj)).toEqual(false)
+  })
+
+  test('when obj[0]!="object"', () => {
+    let obj = [""]
+    expect(lily.computeFoundNotes(obj)).toEqual(false)
+  })
+
+  test('when all conditions are met', () => {
+    let obj = [["S"]]
+    expect(lily.computeFoundNotes(obj)).toEqual(true)
+  })
+})
+
+describe('funcNum', () => {
+  test('when t is a string', () => {
+    let t = "5"
+    expect(lily.funcNum(t)).toEqual(5)
+  })
+
+  test('when t is not a string', () => {
+    let t = 5
+    expect(lily.funcNum(t)).toEqual(5)
+  })
+})
+
+describe('greaterThan', () => {
+  test('when a is greater than b', () => {
+    expect(lily.greaterThan(5,3)).toEqual(1)
+  })
+
+  test('when a is lesser than b', () => {
+    expect(lily.greaterThan(5,7)).toEqual(0)
+  })
+
+  test('when a is equal than b', () => {
+    expect(lily.greaterThan(5,5)).toEqual(0)
+  })
+})
