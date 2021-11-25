@@ -711,3 +711,9 @@ describe('get functions', () => {
     expect(lily.getNumberNames()).toEqual(["zero","one","two","three","four","five","six","seven","eight","nine"])
   })
 })
+
+describe('get empty', () => {
+  test('retEmpty', () => {
+    expect(lily.retEmpty()).toEqual("")
+  })
+})
