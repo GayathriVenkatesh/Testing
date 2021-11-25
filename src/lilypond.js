@@ -623,6 +623,28 @@ const LILYPONDHEADER =
         }
     };
 
+    function computeFoundNotes(obj) {
+        let foundNotes = false;
+        if (typeof obj === "object" && typeof obj[0] === "object" && obj[0][0] !== "R") {
+            foundNotes = true;
+        }
+        return foundNotes;
+    }
+
+    function funcNum(t){
+        if (typeof t === "string") {
+            return Number(t);
+        }
+        return t;
+    }
+
+    function greaterThan(a,b){
+        if(a>b){
+            return 1;
+        }
+        return 0;
+    }
+
     const saveLilypondOutput = function (activity) {
 
         //.TRANS Animal names used in Lilypond output
@@ -669,9 +691,7 @@ const LILYPONDHEADER =
             let foundNotes = false;
             for (let i = 0; i < activity.logo.notation.notationDrumStaging[t].length; i++) {
                 const obj = activity.logo.notation.notationDrumStaging[t][i];
-                if (typeof obj === "object" && typeof obj[0] === "object" && obj[0][0] !== "R") {
-                    foundNotes = true;
-                }
+                foundNotes = computeFoundNotes(obj);
             }
 
             if (foundNotes) {
@@ -694,10 +714,7 @@ const LILYPONDHEADER =
         // for (const t in activity.logo.notation.notationStaging) {
             for (const t in {}) {
             // console.debug('value of t: ' + t);
-            let tNumber = t;
-            if (typeof t === "string") {
-                tNumber = Number(t);
-            }
+            let tNumber = funcNum(t);
 
             if (activity.logo.notation.notationStaging[t].length > 0) {
                 let octaveTotal = 0;
@@ -722,9 +739,11 @@ const LILYPONDHEADER =
                     }
                 }
 
-                if (tNumber > startDrums - 1) {
+                let temp1 = greaterThan(tNumber,startDrums - 1)
+                let temp2 = greaterThan(noteCount,0)
+                if (temp1 === 1) {
                     clef.push("percussion");
-                } else if (noteCount > 0) {
+                } else if (temp2 === 1) {
                     // eslint-disable-next-line no-console
                     console.debug(
                         octaveTotal + " " + noteCount + " " + Math.floor(0.5 + octaveTotal / noteCount)
@@ -1016,4 +1035,4 @@ const LILYPONDHEADER =
 // module.exports = Lily
 // module.exports = LILYPONDHEADER
 
-module.exports = { getLilypondHeader, increment, div, computeCounter, getTupletDuration, getExtendedScale, findKeySignature, computeModeDef, getEmptyString, getArr, getModeDef, getScale, getSong, getObj, __toLilynote, toFraction, processLilypondNotes, saveLilypondOutput, __processTuplet };
+module.exports = { getLilypondHeader, increment, div, computeCounter, getTupletDuration, getExtendedScale, findKeySignature, computeModeDef, getEmptyString, getArr, getModeDef, getScale, getSong, getObj, __toLilynote, toFraction, processLilypondNotes, saveLilypondOutput, __processTuplet, computeFoundNotes, funcNum, greaterThan };
