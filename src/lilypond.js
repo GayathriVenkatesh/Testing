@@ -631,6 +631,17 @@ const LILYPONDHEADER =
         return foundNotes;
     }
 
+    function computeOctaveTotal(obj, ii){
+        if (obj[0][ii] === "R") {
+            return 0;
+        } else if (typeof obj[0][ii] === "string") {
+            return Number(obj[0][ii].substr(-1));
+        } else {
+            const pitchObj = frequencyToPitch(obj[0][ii]);
+            return pitchObj[1];
+        }
+    }
+
     function funcNum(t){
         if (typeof t === "string") {
             return Number(t);
@@ -742,14 +753,7 @@ const LILYPONDHEADER =
                     // console.log(obj);
                     if (typeof obj === "object") {
                         for (let ii = 0; ii < obj[0].length; ii++) {
-                            if (obj[0][ii] === "R") {
-                                continue;
-                            } else if (typeof obj[0][ii] === "string") {
-                                octaveTotal += Number(obj[0][ii].substr(-1));
-                            } else {
-                                const pitchObj = frequencyToPitch(obj[0][ii]);
-                                octaveTotal += pitchObj[1];
-                            }
+                            octaveTotal += computeOctaveTotal(obj, ii);
 
                             noteCount += 1;
                         }
@@ -1052,4 +1056,4 @@ const LILYPONDHEADER =
 // module.exports = Lily
 // module.exports = LILYPONDHEADER
 
-module.exports = { getLilypondHeader, increment, div, computeCounter, getTupletDuration, getExtendedScale, findKeySignature, computeModeDef, getEmptyString, getArr, getModeDef, getScale, getSong, getObj, __toLilynote, toFraction, processLilypondNotes, saveLilypondOutput, __processTuplet, computeFoundNotes, funcNum, greaterThan, getRodents, getClefs, getNumberNames, retEmpty };
+module.exports = { getLilypondHeader, increment, div, computeCounter, getTupletDuration, getExtendedScale, findKeySignature, computeModeDef, getEmptyString, getArr, getModeDef, getScale, getSong, getObj, __toLilynote, toFraction, processLilypondNotes, saveLilypondOutput, __processTuplet, computeFoundNotes, funcNum, greaterThan, getRodents, getClefs, getNumberNames, retEmpty, computeOctaveTotal };
