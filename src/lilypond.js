@@ -736,7 +736,7 @@ const LILYPONDHEADER =
         
         let turtleCount = 0;
         const clef = []; // eslint-disable-next-line no-unused-vars
-        const freygish = ""; // A place to store custom mode definitions
+        const freygish = retEmpty(); // A place to store custom mode definitions
 
         turtleCount += 5
         // Object.keys(activity.logo.notation.notationStaging).length;
@@ -803,15 +803,15 @@ const LILYPONDHEADER =
                     clef.push("treble");
                 }
 
-                this.freygish = "";
+                this.freygish = retEmpty();
                 processLilypondNotes(this, activity.logo, t);
 
-                if (this.freygish !== "") {
+                if (this.freygish !== retEmpty()) {
                     activity.logo.notationOutput += this.freygish;
                 }
 
                 // let instrumentName = "";
-                let shortInstrumentName = "";
+                let shortInstrumentName = retEmpty();
 
                 if (greaterThan(tNumber,startDrums-1)) {
                     instrumentName = _("drum") + NUMBERNAMES[tNumber - startDrums];
@@ -838,7 +838,7 @@ const LILYPONDHEADER =
                         }
                     }
 
-                    if (instrumentName === "") {
+                    if (instrumentName === retEmpty()) {
                         instrumentName = RODENTS[tNumber % 12];
                     }
 
