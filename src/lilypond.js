@@ -228,6 +228,9 @@ const LILYPONDHEADER =
                 " " +
                 "SHARP";
     }
+    function getStringArr() {
+        return ["0", "1", "2", "3"]
+    }
     function computeCounter(tupletNoteCounter, x) {
         if (x > 5) {
             f = div(x, 5)
@@ -690,9 +693,33 @@ const LILYPONDHEADER =
     function retEmpty(){
         return "";
     }
+    function replace_instr(instrumentName) {
+        instrumentName = instrumentName.replace(/ /g, "").replace(".", "")
+        return instrumentName;
+    }
+    function combine(instrumentName) {
+        return '" \\' +
+                    replace_instr(instrumentName) +
+                "\n";
+    }
 
-    function add(a,b){
-        return a+b;
+    function combine2(instrumentName) {
+        return "      \\" 
+            + instrumentName
+            + "Voice\n";
+    }
+
+    function helperInstrument(instrumentName, RODENTS, tNumber) {
+        if (instrumentName === "") {
+            instrumentName = "mouse";
+        }
+
+        if (instrumentName === "start" || instrumentName === "start drum") {
+            instrumentName = RODENTS[2];
+        } else if (instrumentName == tNumber.toString()) {
+            instrumentName = RODENTS[3];
+        }
+        return instrumentName
     }
 
     function computeInstrument(activity, clef, startDrums, arr, instrumentName="") {
@@ -700,39 +727,23 @@ const LILYPONDHEADER =
         let RODENTS = getRodents()
         for (let c = 0; c < getClefs().length; c++) {
             // let instrumentName;
-            for (let t in ["1", "2", "3"]) {
+            for (let t in getStringArr().slice(1, 5)) {
                 let tNumber = funcNum(t);
                 if (clef[tNumber] === CLEFS[c]) {
                     // if (activity.logo.notation.notationStaging[t].length > 0) {
                         if (greaterThan(tNumber,startDrums-1)) {
                             instrumentName = "drum";
                         } else {
-                            // if (t in arr) {
-                            //     instrumentName = t;
-                            // } else if (tNumber in arr) {
-                            //     instrumentName = tNumber;
-                            // } else {
-                            //     instrumentName = "mouse";
-                            // }
-                            if (instrumentName === "") {
-                                instrumentName = "mouse";
-                            }
-
-                            if (instrumentName === "start" || instrumentName === "start drum") {
-                                instrumentName = RODENTS[2];
-                            } else if (instrumentName == tNumber.toString()) {
-                                instrumentName = RODENTS[3];
-                            }
+                        
+                            instrumentName = helperInstrument(instrumentName, RODENTS, tNumber)
                         }
-                        instrumentName = instrumentName.replace(/ /g, retEmpty()).replace(".", retEmpty());
-                        activity.logo.notationOutput += "      \\" + instrumentName + "Voice\n";
+                        instrumentName = replace_instr(instrumentName);
+                        activity.logo.notationOutput += combine2(instrumentName);
 
                         activity.logo.notationOutput +=
                             '         \\context TabVoice = "' +
                             instrumentName +
-                            '" \\' +
-                            instrumentName.replace(/ /g, retEmpty()).replace(".", retEmpty()) +
-                            "\n";
+                            combine(instrumentName)
                         
                     }
                 // }
@@ -741,26 +752,93 @@ const LILYPONDHEADER =
         return instrumentName
     }
 
-    const saveLilypondOutput = function (activity, instrumentName="", temp_arr = [[1],[2],[3],[4],[5]], arr=["C", "D", "E"]) {
+    function findClef(clef, val, tNumber, startDrums, noteCount) {
+        if (greaterThan(tNumber,startDrums - 1)) {
+            clef.push("percussion");
+        } else if (greaterThan(noteCount, 0)) {
+            // eslint-disable-next-line no-console
+            // console.debug(
+            //     octaveTotal + " " + noteCount + " " + Math.floor(0.5 + octaveTotal / noteCount)
+            // );
+            switch (Math.floor(0.5 + val)) {
+                case 0:
+                case 1:
+                case 2:
+                    clef.push("bass_8");
+                    break;
+                case 3:
+                    clef.push("bass");
+                    break;
+                default:
+                    clef.push("treble");
+                    break;
+            }
+        } else {
+            clef.push("treble");
+        }
+        return clef
+    }
+
+    function get_temparr() {
+        return [[1],[2],[3],[4],[5]]
+    }
+    
+    function getOctaveTotal(arr) {
+        let octaveTotal = 0
+        for (let i = 0; i < arr.length; i++) {
+            const obj = arr[i];
+            if (typeof obj === "object") {
+                for (let ii = 0; ii < obj[0].length; ii++) {
+                    if (obj[0][ii] === "R") {
+                        continue;
+                    } else if (typeof obj[0][ii] === "string") {
+                        octaveTotal += Number(obj[0][ii].substr(-1));
+                    } else {
+                        const pitchObj = toFraction(Number(obj[0][ii]));
+                        octaveTotal += pitchObj[0];
+                    }
+                }
+            }
+        }
+        return octaveTotal;
+    }
+
+    function getNoteCount(arr) {
+        let noteCount = 0
+        for (let i = 0; i < arr.length; i++) {
+            const obj = arr[i];
+            // console.log("obj is ");
+            // console.log(obj);
+            if (typeof obj === "object") {
+                // noteCount = 100
+                for (let ii = 0; ii < obj[0].length; ii++) {
+                    if (obj[0][ii] === "R") {
+                        continue;
+                    }
+                    noteCount += 1;
+                }
+            }
+        }
+        return noteCount;
+    }
+
+    const saveLilypondOutput = function (activity, instrumentName=getEmptyString(), temp_arr=get_temparr(), arr=getArr(), startDrums=0) {
 
         //.TRANS Animal names used in Lilypond output
         const RODENTS = getRodents();
-
         const CLEFS = getClefs();
-
         const NUMBERNAMES = getNumberNames();
         
         let turtleCount = 0;
-        const clef = getEmptyList(); // eslint-disable-next-line no-unused-vars
+        let clef = getEmptyList(); // eslint-disable-next-line no-unused-vars
         const freygish = getEmptyString(); // A place to store custom mode definitions
 
         turtleCount += 5
         // Object.keys(activity.logo.notation.notationStaging).length;
 
-        const startDrums = turtleCount;
+        // const startDrums = turtleCount;
 
         // eslint-disable-next-line no-console
-        console.debug(getEmptyString() + turtleCount);
 
         activity.logo.notationOutput +=
             "% You can change the MIDI instruments below to anything on this list:\n% (http://lilypond.org/doc/v2.18/documentation/notation/midi-instruments)\n\n";
@@ -775,63 +853,20 @@ const LILYPONDHEADER =
             if (temp_arr[t].length > 0) {
                 let octaveTotal = 0;
                 let noteCount = 0;
-                for (let i = 0; i < temp_arr[t].length; i++) {
-                    const obj = temp_arr[t][i];
-                    // console.log("obj is ");
-                    // console.log(obj);
-                    if (typeof obj === "object") {
-                        for (let ii = 0; ii < obj[0].length; ii++) {
-                            if (obj[0][ii] === "R") {
-                                continue;
-                            } else if (typeof obj[0][ii] === "string") {
-                                octaveTotal += Number(obj[0][ii].substr(-1));
-                            } else {
-                                const pitchObj = frequencyToPitch(obj[0][ii]);
-                                octaveTotal += pitchObj[1];
-                            }
+                noteCount = getNoteCount(temp_arr[t])
+                octaveTotal = getOctaveTotal(temp_arr[t])
 
-                            noteCount += 1;
-                        }
-                    }
-                }
+                clef = findClef(clef, div(octaveTotal, noteCount), tNumber, startDrums, noteCount)
 
-                if (greaterThan(tNumber,startDrums - 1)) {
-                    clef.push("percussion");
-                } else if (greaterThan(noteCount,0)) {
-                    // eslint-disable-next-line no-console
-                    console.debug(
-                        octaveTotal + " " + noteCount + " " + Math.floor(0.5 + octaveTotal / noteCount)
-                    );
-                    switch (Math.floor(0.5 + octaveTotal / noteCount)) {
-                        case 0:
-                        case 1:
-                        case 2:
-                            clef.push("bass_8");
-                            break;
-                        case 3:
-                            clef.push("bass");
-                            break;
-                        default:
-                            clef.push("treble");
-                            break;
-                    }
-                } else {
-                    clef.push("treble");
-                }
-
-                this.freygish = retEmpty();
+                this.freygish = "";
                 processLilypondNotes(this, activity.logo, t);
 
-                if (this.freygish !== "") {
-                    activity.logo.notationOutput += this.freygish;
-                }
-
                 // let instrumentName = "";
-                let shortInstrumentName = retEmpty();
+                let shortInstrumentName = "";
 
                 if (greaterThan(tNumber,startDrums-1)) {
                     instrumentName = "drum" + NUMBERNAMES[tNumber - startDrums];
-                    instrumentName = instrumentName.replace(/ /g, retEmpty()).replace(".", retEmpty());
+                    instrumentName = replace_instr(instrumentName);
                     activity.logo.notationOutput += instrumentName + " = {\n";
                     activity.logo.notationOutput += "\\drummode {\n";
                     activity.logo.notationOutput += activity.logo.notationNotes[t];
@@ -858,7 +893,7 @@ const LILYPONDHEADER =
                         instrumentName = RODENTS[tNumber % 12];
                     }
 
-                    instrumentName = instrumentName.replace(/ /g, retEmpty()).replace(".", retEmpty());
+                    instrumentName = replace_instr(instrumentName);
 
                     // console.log("L604: " + instrumentName);
                     activity.logo.notationOutput += instrumentName + " = {\n";
@@ -894,7 +929,7 @@ const LILYPONDHEADER =
                             if (p === 2) {
                                 final = instrumentName.slice(0, 2);
                             } else {
-                                final = add(final,instrumentName.charAt(p - 1));
+                                final = final + instrumentName.charAt(p - 1);
                             }
 
                             if (occupiedShortNames.indexOf(final) === -1) {
@@ -910,7 +945,7 @@ const LILYPONDHEADER =
                         secondPart = instrumentName.slice(n + 1, instrumentName.length);
                         part1 = firstPart.charAt(0);
                         part2 = secondPart.charAt(0);
-                        final = add(part1,part2);
+                        final = part1 + part2;
 
                         if (occupiedShortNames.indexOf(final) === -1) {
                             // found unique shortname
@@ -918,18 +953,18 @@ const LILYPONDHEADER =
                             occupiedShortNames[t] = shortInstrumentName;
                             done = 1;
                         } else if (done !== 1) {
-                            final = retEmpty();
+                            final = "";
                             for (let q = 1; q < instrumentName.length; q++) {
-                                part2 = add(part2,secondPart.charAt(q));
-                                final = add(part1,part2);
+                                part2 = part2 + secondPart.charAt(q);
+                                final = part1 + part2;
                                 if (occupiedShortNames.indexOf(final) === -1) {
                                     // found unique shortname
                                     shortInstrumentName = final;
                                     occupiedShortNames[t] = shortInstrumentName;
                                     break;
                                 } else {
-                                    part1 = add(part1,firstPart.charAt(q));
-                                    final = add(part1,part2);
+                                    part1 = part1 + firstPart.charAt(q);
+                                    final = part1 + part2;
                                     if (occupiedShortNames.indexOf(final) === -1) {
                                         // found unique shortname
                                         shortInstrumentName = final;
@@ -945,7 +980,7 @@ const LILYPONDHEADER =
                     // console.debug("shortInstrumentName: " + shortInstrumentName);
                 }
 
-                activity.logo.notationOutput += instrumentName.replace(/ /g, retEmpty()).replace(".", retEmpty()) + "Voice = ";
+                activity.logo.notationOutput += replace_instr(instrumentName) + "Voice = ";
                 if (greaterThan(tNumber,startDrums-1)) {
                     activity.logo.notationOutput += "\\new DrumStaff \\with {\n";
                 } else {
@@ -969,10 +1004,10 @@ const LILYPONDHEADER =
                     '\n} { \\clef "' +
                     clef[-1] +
                     '" \\' +
-                    instrumentName.replace(/ /g, retEmpty()).replace(".", retEmpty()) +
+                    replace_instr(instrumentName) +
                     " }\n\n";
             } else {
-                clef.push(retEmpty());
+                clef.push(getEmptyString());
             }
 
             c += 1;
@@ -981,7 +1016,7 @@ const LILYPONDHEADER =
         // Begin the SCORE section.
         activity.logo.notationOutput += "\n\\score {\n";
         activity.logo.notationOutput += "   <<\n";
-        instrumentName = computeInstrument(activity, clef, startDrums, ["0", "1", "2", "3"])
+        instrumentName = computeInstrument(activity, clef, startDrums, getStringArr())
         // Sort the staffs, treble on top, bass_8 on the bottom.
 
         // Add GUITAR TAB in comments.
@@ -1009,4 +1044,4 @@ const LILYPONDHEADER =
 // module.exports = Lily
 // module.exports = LILYPONDHEADER
 
-module.exports = { getLilypondHeader, increment, div, computeInstrument, computeCounter, getTupletDuration, getExtendedScale, findKeySignature, computeModeDef, getEmptyString, getArr, getModeDef, getScale, getSong, getObj, __toLilynote, toFraction, processLilypondNotes, saveLilypondOutput, __processTuplet, computeFoundNotes, funcNum, greaterThan, getRodents, getClefs, getNumberNames, retEmpty, add };
+module.exports = { getLilypondHeader, increment, helperInstrument, combine, combine2, get_temparr, getNoteCount, getOctaveTotal, replace_instr, div, findClef, computeInstrument, computeCounter, getStringArr, getTupletDuration, getExtendedScale, findKeySignature, computeModeDef, getEmptyString, getArr, getModeDef, getScale, getSong, getObj, __toLilynote, toFraction, processLilypondNotes, saveLilypondOutput, __processTuplet, computeFoundNotes, funcNum, greaterThan, getRodents, getClefs, getNumberNames, retEmpty };
