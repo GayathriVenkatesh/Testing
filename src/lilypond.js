@@ -720,14 +720,14 @@ const LILYPONDHEADER =
                                 instrumentName = RODENTS[3];
                             }
                         }
-                        instrumentName = instrumentName.replace(/ /g, "").replace(".", "");
+                        instrumentName = instrumentName.replace(/ /g, retEmpty()).replace(".", retEmpty());
                         activity.logo.notationOutput += "      \\" + instrumentName + "Voice\n";
 
                         activity.logo.notationOutput +=
                             '         \\context TabVoice = "' +
                             instrumentName +
                             '" \\' +
-                            instrumentName.replace(/ /g, "").replace(".", "") +
+                            instrumentName.replace(/ /g, retEmpty()).replace(".", retEmpty()) +
                             "\n";
                         
                     }
@@ -815,7 +815,7 @@ const LILYPONDHEADER =
                     clef.push("treble");
                 }
 
-                this.freygish = "";
+                this.freygish = retEmpty();
                 processLilypondNotes(this, activity.logo, t);
 
                 if (this.freygish !== "") {
@@ -823,11 +823,11 @@ const LILYPONDHEADER =
                 }
 
                 // let instrumentName = "";
-                let shortInstrumentName = "";
+                let shortInstrumentName = retEmpty();
 
                 if (greaterThan(tNumber,startDrums-1)) {
                     instrumentName = "drum" + NUMBERNAMES[tNumber - startDrums];
-                    instrumentName = instrumentName.replace(/ /g, "").replace(".", "");
+                    instrumentName = instrumentName.replace(/ /g, retEmpty()).replace(".", retEmpty());
                     activity.logo.notationOutput += instrumentName + " = {\n";
                     activity.logo.notationOutput += "\\drummode {\n";
                     activity.logo.notationOutput += activity.logo.notationNotes[t];
@@ -854,7 +854,7 @@ const LILYPONDHEADER =
                         instrumentName = RODENTS[tNumber % 12];
                     }
 
-                    instrumentName = instrumentName.replace(/ /g, "").replace(".", "");
+                    instrumentName = instrumentName.replace(/ /g, retEmpty()).replace(".", retEmpty());
 
                     // console.log("L604: " + instrumentName);
                     activity.logo.notationOutput += instrumentName + " = {\n";
@@ -914,7 +914,7 @@ const LILYPONDHEADER =
                             occupiedShortNames[t] = shortInstrumentName;
                             done = 1;
                         } else if (done !== 1) {
-                            final = "";
+                            final = retEmpty();
                             for (let q = 1; q < instrumentName.length; q++) {
                                 part2 = part2 + secondPart.charAt(q);
                                 final = part1 + part2;
@@ -941,7 +941,7 @@ const LILYPONDHEADER =
                     // console.debug("shortInstrumentName: " + shortInstrumentName);
                 }
 
-                activity.logo.notationOutput += instrumentName.replace(/ /g, "").replace(".", "") + "Voice = ";
+                activity.logo.notationOutput += instrumentName.replace(/ /g, retEmpty()).replace(".", retEmpty()) + "Voice = ";
                 if (greaterThan(tNumber,startDrums-1)) {
                     activity.logo.notationOutput += "\\new DrumStaff \\with {\n";
                 } else {
@@ -965,10 +965,10 @@ const LILYPONDHEADER =
                     '\n} { \\clef "' +
                     clef[-1] +
                     '" \\' +
-                    instrumentName.replace(/ /g, "").replace(".", "") +
+                    instrumentName.replace(/ /g, retEmpty()).replace(".", retEmpty()) +
                     " }\n\n";
             } else {
-                clef.push("");
+                clef.push(retEmpty());
             }
 
             c += 1;
