@@ -654,6 +654,10 @@ const LILYPONDHEADER =
         return 0;
     }
 
+    function add(a,b){
+        return a+b;
+    }
+
     function getRodents(){
         return [
             ("mouse"),
@@ -815,7 +819,7 @@ const LILYPONDHEADER =
                     if (obj[0][ii] === "R") {
                         continue;
                     }
-                    noteCount += 1;
+                    noteCount = add(noteCount,1);
                 }
             }
         }
@@ -833,7 +837,7 @@ const LILYPONDHEADER =
         let clef = getEmptyList(); // eslint-disable-next-line no-unused-vars
         const freygish = getEmptyString(); // A place to store custom mode definitions
 
-        turtleCount += 5
+        turtleCount = add(turtleCount,5);
         // Object.keys(activity.logo.notation.notationStaging).length;
 
         // const startDrums = turtleCount;
@@ -919,7 +923,7 @@ const LILYPONDHEADER =
                             if (p === 2) {
                                 final = instrumentName.slice(0, 2);
                             } else {
-                                final = final + instrumentName.charAt(p - 1);
+                                final = add(final,instrumentName.charAt(p - 1));
                             }
 
                             if (occupiedShortNames.indexOf(final) === -1) {
@@ -932,10 +936,10 @@ const LILYPONDHEADER =
                     } else {
                         // at least 1 space in instrument name
                         firstPart = instrumentName.slice(0, n);
-                        secondPart = instrumentName.slice(n + 1, instrumentName.length);
+                        secondPart = instrumentName.slice(add(n,1), instrumentName.length);
                         part1 = firstPart.charAt(0);
                         part2 = secondPart.charAt(0);
-                        final = part1 + part2;
+                        final = add(part1,part2);
 
                         if (occupiedShortNames.indexOf(final) === -1) {
                             // found unique shortname
@@ -945,16 +949,16 @@ const LILYPONDHEADER =
                         } else if (done !== 1) {
                             final = "";
                             for (let q = 1; q < instrumentName.length; q++) {
-                                part2 = part2 + secondPart.charAt(q);
-                                final = part1 + part2;
+                                part2 = add(part2,secondPart.charAt(q));
+                                final = add(part1,part2);
                                 if (occupiedShortNames.indexOf(final) === -1) {
                                     // found unique shortname
                                     shortInstrumentName = final;
                                     occupiedShortNames[t] = shortInstrumentName;
                                     break;
                                 } else {
-                                    part1 = part1 + firstPart.charAt(q);
-                                    final = part1 + part2;
+                                    part1 = add(part1,firstPart.charAt(q));
+                                    final = add(part1,part2);
                                     if (occupiedShortNames.indexOf(final) === -1) {
                                         // found unique shortname
                                         shortInstrumentName = final;
@@ -1000,7 +1004,7 @@ const LILYPONDHEADER =
                 clef.push(getEmptyString());
             }
 
-            c += 1;
+            c = add(c,1);
         }
 
         // Begin the SCORE section.
@@ -1034,4 +1038,4 @@ const LILYPONDHEADER =
 // module.exports = Lily
 // module.exports = LILYPONDHEADER
 
-module.exports = { getLilypondHeader, increment, helperInstrument, combine, combine2, get_temparr, getNoteCount, getOctaveTotal, replace_instr, div, findClef, computeInstrument, computeCounter, getStringArr, getTupletDuration, getExtendedScale, findKeySignature, computeModeDef, getEmptyString, getArr, getModeDef, getScale, getSong, getObj, __toLilynote, toFraction, processLilypondNotes, saveLilypondOutput, __processTuplet, computeFoundNotes, funcNum, greaterThan, getRodents, getClefs, getNumberNames, retEmpty };
+module.exports = { getLilypondHeader, increment, helperInstrument, combine, combine2, get_temparr, getNoteCount, getOctaveTotal, replace_instr, div, findClef, computeInstrument, computeCounter, getStringArr, getTupletDuration, getExtendedScale, findKeySignature, computeModeDef, getEmptyString, getArr, getModeDef, getScale, getSong, getObj, __toLilynote, toFraction, processLilypondNotes, saveLilypondOutput, __processTuplet, computeFoundNotes, funcNum, greaterThan, getRodents, getClefs, getNumberNames, retEmpty, add };
