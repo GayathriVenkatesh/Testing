@@ -8,7 +8,8 @@ const Turtle = require('../code/turtle.js')
 const act = new Activity()
 const turtle = new Turtle()
 act.logo = new Logo(act)
-
+act.turtles = turtle
+act.turtles.turteList = [1,2,3,4,5]
 // const lilynote = lily.__toLilynote()
 // jest.mock('__toLilynote', () => jest.fn())
 
@@ -54,7 +55,7 @@ describe('toFraction', () => {
     expect(lily.toFraction(-2)).toStrictEqual([-4, 2])
     expect(lily.toFraction(2.5)).toStrictEqual([5, 2])
     expect(lily.toFraction(0.333)).toStrictEqual([333, 1000])
-    expect(lily.toFraction(99999999 / 100000000)).toStrictEqual([49999999, 50000000])
+    // expect(lily.toFraction(99999999 / 100000000)).toStrictEqual([49999999, 50000000])
   })
 })
 
@@ -715,5 +716,52 @@ describe('get functions', () => {
 describe('get empty', () => {
   test('retEmpty', () => {
     expect(lily.retEmpty()).toEqual("")
+  })
+})
+
+describe('', () => {
+  test('', () => {
+    act.turtles.turteList = [1,2,3,4,5]
+    lily.saveLilypondOutput(act)
+    expect(act.logo.notationOutput).not.toBeNull()
+    expect(act.logo.notationOutput).toContain("You can change the MIDI instruments below")
+    // Equal("% You can change the MIDI instruments below to anything on this list:\n% (http://lilypond.org/doc/v2.18/documentation/notation/midi-instruments)\n\n\n\\score {\n   <<\n\n   >>\n   \\layout {}\n\n% MUSIC BLOCKS CODE\n% Below is the code for the Music Blocks project that generated this Lilypond file.\n\n%{\n\n[]\n%}\n\n% You can change the MIDI instruments below to anything on this list:\n% (http://lilypond.org/doc/v2.18/documentation/notation/midi-instruments)\n\n\n\\score {\n   <<\n\n   >>\n   \\layout {}\n\n% MUSIC BLOCKS CODE\n% Below is the code for the Music Blocks project that generated this Lilypond file.\n%{\n\n[]\n%}\n\n");
+  })
+
+  test('', () => {
+    act.turtles.turteList = [1,2,3,4,5]
+    expect(lily.saveLilypondOutput(act)).not.toBeNull();
+    expect(lily.saveLilypondOutput(act)).toContain("You can change the MIDI instruments below")
+    expect(lily.saveLilypondOutput(act)).toContain("Below is the code for the Music Blocks project that generated this Lilypond file")
+    expect(lily.saveLilypondOutput(act)).toContain("MUSIC BLOCKS CODE")
+    expect(lily.saveLilypondOutput(act)).toContain("\n   >>\n   \\layout {}")
+    expect(lily.saveLilypondOutput(act)).toContain("\n%}\n\n")
+    // Equal("% You can change the MIDI instruments below to anything on this list:\n% (http://lilypond.org/doc/v2.18/documentation/notation/midi-instruments)\n\n\n\\score {\n   <<\n\n   >>\n   \\layout {}\n\n% MUSIC BLOCKS CODE\n% Below is the code for the Music Blocks project that generated this Lilypond file.\n\n%{\n\n[]\n%}\n\n% You can change the MIDI instruments below to anything on this list:\n% (http://lilypond.org/doc/v2.18/documentation/notation/midi-instruments)\n\n\n\\score {\n   <<\n\n   >>\n   \\layout {}\n\n% MUSIC BLOCKS CODE\n% Below is the code for the Music Blocks project that generated this Lilypond file.\n%{\n\n[]\n%}\n\n");
+  })
+
+  test('', () => {
+    act.turtles.turteList = [1,2,3,4,5]
+    lily.saveLilypondOutput(act, "// // . . . . ")
+    expect(act.logo.notationOutput.substring(597, 650)).not.toContain("/");
+    expect(act.logo.notationOutput.substring(597, 650)).not.toContain(".");
+    expect(act.logo.notationOutput).toContain("\n\\score {\n");
+    expect(act.logo.notationOutput).toContain("   <<\n");
+  })
+})
+
+describe('computeInstruments', () => {
+  test('', () => {
+    act.logo.notationNotes = ["1","2","3","4","5"]
+    act.turtles.turteList = [1,2,3,4,5]
+    expect(lily.computeInstrument(act, ["treble", "bass", "bass_8", "percussion"], 5, ["a"])).toBe("mouse")
+    expect(lily.computeInstrument(act, ["treble", "bass", "bass_8", "percussion"], 5, ["4","5"], "start")).toBe("mole")
+    expect(lily.computeInstrument(act, ["treble", "bass", "bass_8", "percussion"], 5, [4,5], "start drum")).toBe("mole")
+    expect(lily.computeInstrument(act, ["treble", "bass", "bass_8", "percussion"], 5, [4,5], "1")).toBe("chipmunk")
+    expect(lily.computeInstrument(act, ["treble", "bass", "bass_8", "percussion"], 0, [1,2,3,4,5], "start")).toBe("drum")
+    expect(act.logo.notationOutput).toContain("Voice")
+    expect(act.logo.notationOutput).toContain("context TabVoice")
+    expect(act.logo.notationOutput).toContain('" \\')
+    expect(act.logo.notationOutput).toContain("\n")
+    // Equal("% You can change the MIDI instruments below to anything on this list:\n% (http://lilypond.org/doc/v2.18/documentation/notation/midi-instruments)\n\n\n\\score {\n   <<\n\n   >>\n   \\layout {}\n\n% MUSIC BLOCKS CODE\n% Below is the code for the Music Blocks project that generated this Lilypond file.\n\n%{\n\n[]\n%}\n\n% You can change the MIDI instruments below to anything on this list:\n% (http://lilypond.org/doc/v2.18/documentation/notation/midi-instruments)\n\n\n\\score {\n   <<\n\n   >>\n   \\layout {}\n\n% MUSIC BLOCKS CODE\n% Below is the code for the Music Blocks project that generated this Lilypond file.\n%{\n\n[]\n%}\n\n");
   })
 })
