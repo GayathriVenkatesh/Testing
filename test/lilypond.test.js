@@ -765,9 +765,3 @@ describe('computeInstruments', () => {
     // Equal("% You can change the MIDI instruments below to anything on this list:\n% (http://lilypond.org/doc/v2.18/documentation/notation/midi-instruments)\n\n\n\\score {\n   <<\n\n   >>\n   \\layout {}\n\n% MUSIC BLOCKS CODE\n% Below is the code for the Music Blocks project that generated this Lilypond file.\n\n%{\n\n[]\n%}\n\n% You can change the MIDI instruments below to anything on this list:\n% (http://lilypond.org/doc/v2.18/documentation/notation/midi-instruments)\n\n\n\\score {\n   <<\n\n   >>\n   \\layout {}\n\n% MUSIC BLOCKS CODE\n% Below is the code for the Music Blocks project that generated this Lilypond file.\n%{\n\n[]\n%}\n\n");
   })
 })
-
-describe('get empty array', () => {
-  test('retEmptyArray', () => {
-    expect(lily.retEmptyArray()).toEqual([])
-  })
-})
