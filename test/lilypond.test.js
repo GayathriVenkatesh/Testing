@@ -741,6 +741,13 @@ describe('', () => {
     lily.saveLilypondOutput(act)
     expect(act.logo.notationOutput).not.toBeNull()
     expect(act.logo.notationOutput).toContain("You can change the MIDI instruments below")
+
+    lily.saveLilypondOutput(act, "", [[1],[2],[3],[4],[5]], lily.getArr(), 10)
+    expect((act.logo.notationOutput.match(/\n}\n\n/g) || []).length).toBe(10)
+    lily.saveLilypondOutput(act, "", [[1],[2],[3],[4],[5]], lily.getArr(), 2)
+    expect((act.logo.notationOutput.match(/\n}\n\n/g) || []).length).toBe(15)
+    lily.saveLilypondOutput(act, "", [[1],[2],[3],[4],[5]], lily.getArr(), -4)
+    expect(act.logo.notationOutput).toContain(' \\bar "|."')
     // Equal("% You can change the MIDI instruments below to anything on this list:\n% (http://lilypond.org/doc/v2.18/documentation/notation/midi-instruments)\n\n\n\\score {\n   <<\n\n   >>\n   \\layout {}\n\n% MUSIC BLOCKS CODE\n% Below is the code for the Music Blocks project that generated this Lilypond file.\n\n%{\n\n[]\n%}\n\n% You can change the MIDI instruments below to anything on this list:\n% (http://lilypond.org/doc/v2.18/documentation/notation/midi-instruments)\n\n\n\\score {\n   <<\n\n   >>\n   \\layout {}\n\n% MUSIC BLOCKS CODE\n% Below is the code for the Music Blocks project that generated this Lilypond file.\n%{\n\n[]\n%}\n\n");
   })
 
@@ -786,7 +793,10 @@ describe('computeInstruments', () => {
     expect(lily.computeInstrument(act, ["hello"], 0, [1,2,3,4,5], "start")).toBe("start")
     expect(act.logo.notationOutput).toContain("Voice")
     expect(act.logo.notationOutput).toContain("context TabVoice")
-    expect((act.logo.notationOutput.match(/context TabVoice/g) || []).length).toBe(45)
+
+    act.logo.notationOutput = ""
+    lily.computeInstrument(act, ["treble", "bass", "bass_8", "percussion"], 0, [1,2,3,4,5], "start")
+    expect((act.logo.notationOutput.match(/context TabVoice/g) || []).length).toBe(3)
     expect(act.logo.notationOutput).toContain('" \\')
     expect(act.logo.notationOutput).toContain("\n")
 
@@ -850,19 +860,5 @@ describe('getOctaveTotal', () => {
 describe('get_temparr', () => {
   test('', () => {
     expect(lily.get_temparr("test")).toStrictEqual([[1],[2],[3],[4],[5]])
-  })
-})
-
-describe('add', () => {
-  test('when both are positive', () => {
-    expect(lily.add(5,3)).toEqual(8)
-  })
-
-  test('when both are negative', () => {
-    expect(lily.add(-5,-7)).toEqual(-12)
-  })
-
-  test('when one is positive one is negative', () => {
-    expect(lily.add(5,-5)).toEqual(0)
   })
 })
