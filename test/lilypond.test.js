@@ -852,3 +852,17 @@ describe('get_temparr', () => {
     expect(lily.get_temparr("test")).toStrictEqual([[1],[2],[3],[4],[5]])
   })
 })
+
+describe('add', () => {
+  test('when both are positive', () => {
+    expect(lily.add(5,3)).toEqual(8)
+  })
+
+  test('when both are negative', () => {
+    expect(lily.add(-5,-7)).toEqual(-12)
+  })
+
+  test('when one is positive one is negative', () => {
+    expect(lily.add(5,-5)).toEqual(0)
+  })
+})
