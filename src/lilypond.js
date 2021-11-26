@@ -782,7 +782,7 @@ const LILYPONDHEADER =
     function get_temparr() {
         return [[1],[2],[3],[4],[5]]
     }
-    
+
     function getOctaveTotal(arr) {
         let octaveTotal = 0
         for (let i = 0; i < arr.length; i++) {
@@ -822,14 +822,14 @@ const LILYPONDHEADER =
         return noteCount;
     }
 
-    const saveLilypondOutput = function (activity, instrumentName=getEmptyString(), temp_arr=get_temparr(), arr=getArr(), startDrums=0) {
+    const saveLilypondOutput = function (activity, instrumentName=getEmptyString(), temp_arr=get_temparr(), arr=getArr(), startDrums=0, turtleCount=0) {
 
         //.TRANS Animal names used in Lilypond output
         const RODENTS = getRodents();
         const CLEFS = getClefs();
         const NUMBERNAMES = getNumberNames();
         
-        let turtleCount = 0;
+        // let turtleCount = 0;
         let clef = getEmptyList(); // eslint-disable-next-line no-unused-vars
         const freygish = getEmptyString(); // A place to store custom mode definitions
 
@@ -862,7 +862,7 @@ const LILYPONDHEADER =
                 processLilypondNotes(this, activity.logo, t);
 
                 // let instrumentName = "";
-                let shortInstrumentName = "";
+                let shortInstrumentName = getEmptyString()
 
                 if (greaterThan(tNumber,startDrums-1)) {
                     instrumentName = "drum" + NUMBERNAMES[tNumber - startDrums];
@@ -880,17 +880,7 @@ const LILYPONDHEADER =
                 } else {
                     if (t in arr) {
                         // const turtleNumber = tNumber;
-
-                        instrumentName = t;
-                        if (instrumentName === "start" || instrumentName === "start drum") {
-                            instrumentName = RODENTS[tNumber % 12];
-                        } else if (instrumentName === tNumber.toString()) {
-                            instrumentName = RODENTS[tNumber % 12];
-                        }
-                    }
-
-                    if (instrumentName === "") {
-                        instrumentName = RODENTS[tNumber % 12];
+                        instrumentName = computeInstrument(activity, clef, startDrums, getStringArr(), t);
                     }
 
                     instrumentName = replace_instr(instrumentName);
