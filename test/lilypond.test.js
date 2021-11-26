@@ -13,7 +13,7 @@ act.turtles.turteList = [1,2,3,4,5]
 // const lilynote = lily.__toLilynote()
 // jest.mock('__toLilynote', () => jest.fn())
 
-describe('getLilypondHeader', () => {
+  describe('getLilypondHeader', () => {
     test('should return the header', () => {
       expect(lily.getLilypondHeader()).not.toBeUndefined()
       expect(lily.getLilypondHeader()).not.toBe("")
@@ -21,6 +21,18 @@ describe('getLilypondHeader', () => {
     })
   })
   
+  describe('findClef', () => {
+    test('should return the header', () => {
+      expect(lily.findClef([], 0, 5, 4, 0)).toStrictEqual(["percussion"])
+      expect(lily.findClef([], -0.5, 2, 4, 3)).toStrictEqual(["bass_8"]) 
+      expect(lily.findClef([], 0, 2, 4, 0.5)).toStrictEqual(["bass_8"]) 
+      expect(lily.findClef([], 1.5, 2, 4, 0.5)).toStrictEqual(["bass_8"]) 
+      expect(lily.findClef([], 2.5, 2, 4, 2.5)).toStrictEqual(["bass"]) 
+      expect(lily.findClef([], 3.5, 2, 4, 3.5)).toStrictEqual(["treble"])  
+      expect(lily.findClef([], 0, 2, 4, -1)).toStrictEqual(["treble"])    
+    })
+  })
+
   describe('getTupletDuration', () => {
     test('should get the tuplet duration', () => {
       expect(lily.getTupletDuration()).toBe(20) 
@@ -662,6 +674,11 @@ describe('computeFoundNotes', () => {
     expect(lily.computeFoundNotes(obj)).toEqual(false)
   })
 
+  test('when obj is num', () => {
+    let obj = 3
+    expect(lily.computeFoundNotes(obj)).toEqual(false)
+  })
+
   test('when obj[0]!="object"', () => {
     let obj = [""]
     expect(lily.computeFoundNotes(obj)).toEqual(false)
@@ -680,8 +697,7 @@ describe('funcNum', () => {
   })
 
   test('when t is not a string', () => {
-    let t = 5
-    expect(lily.funcNum(t)).toEqual(5)
+    expect(lily.funcNum(5)).toEqual(5)
   })
 })
 
@@ -728,6 +744,14 @@ describe('', () => {
     // Equal("% You can change the MIDI instruments below to anything on this list:\n% (http://lilypond.org/doc/v2.18/documentation/notation/midi-instruments)\n\n\n\\score {\n   <<\n\n   >>\n   \\layout {}\n\n% MUSIC BLOCKS CODE\n% Below is the code for the Music Blocks project that generated this Lilypond file.\n\n%{\n\n[]\n%}\n\n% You can change the MIDI instruments below to anything on this list:\n% (http://lilypond.org/doc/v2.18/documentation/notation/midi-instruments)\n\n\n\\score {\n   <<\n\n   >>\n   \\layout {}\n\n% MUSIC BLOCKS CODE\n% Below is the code for the Music Blocks project that generated this Lilypond file.\n%{\n\n[]\n%}\n\n");
   })
 
+  test('startDrums is greater', () => {
+    act.turtles.turteList = [1,2,3,4,5]
+    lily.saveLilypondOutput(act, 50)
+    expect(act.logo.notationOutput).not.toBeNull()
+    expect(act.logo.notationOutput).toContain("You can change the MIDI instruments below")
+    // Equal("% You can change the MIDI instruments below to anything on this list:\n% (http://lilypond.org/doc/v2.18/documentation/notation/midi-instruments)\n\n\n\\score {\n   <<\n\n   >>\n   \\layout {}\n\n% MUSIC BLOCKS CODE\n% Below is the code for the Music Blocks project that generated this Lilypond file.\n\n%{\n\n[]\n%}\n\n% You can change the MIDI instruments below to anything on this list:\n% (http://lilypond.org/doc/v2.18/documentation/notation/midi-instruments)\n\n\n\\score {\n   <<\n\n   >>\n   \\layout {}\n\n% MUSIC BLOCKS CODE\n% Below is the code for the Music Blocks project that generated this Lilypond file.\n%{\n\n[]\n%}\n\n");
+  })
+
   test('', () => {
     act.turtles.turteList = [1,2,3,4,5]
     expect(lily.saveLilypondOutput(act)).not.toBeNull();
@@ -757,25 +781,74 @@ describe('computeInstruments', () => {
     expect(lily.computeInstrument(act, ["treble", "bass", "bass_8", "percussion"], 5, ["4","5"], "start")).toBe("mole")
     expect(lily.computeInstrument(act, ["treble", "bass", "bass_8", "percussion"], 5, [4,5], "start drum")).toBe("mole")
     expect(lily.computeInstrument(act, ["treble", "bass", "bass_8", "percussion"], 5, [4,5], "1")).toBe("chipmunk")
+    expect(lily.computeInstrument(act, ["treble", "bass", "bass_8", "percussion"], 2, [4,5], "1")).toBe("drum")
     expect(lily.computeInstrument(act, ["treble", "bass", "bass_8", "percussion"], 0, [1,2,3,4,5], "start")).toBe("drum")
+    expect(lily.computeInstrument(act, ["hello"], 0, [1,2,3,4,5], "start")).toBe("start")
     expect(act.logo.notationOutput).toContain("Voice")
     expect(act.logo.notationOutput).toContain("context TabVoice")
+    expect((act.logo.notationOutput.match(/context TabVoice/g) || []).length).toBe(45)
     expect(act.logo.notationOutput).toContain('" \\')
     expect(act.logo.notationOutput).toContain("\n")
+
+    expect(lily.helperInstrument("", lily.getRodents(), 0)).toBe("mouse")
+    expect(lily.helperInstrument("start", lily.getRodents(), 0)).toBe("mole")
+    expect(lily.helperInstrument("start drum", lily.getRodents(), 0)).toBe("mole")
+    expect(lily.helperInstrument("2", lily.getRodents(), 2)).toBe("chipmunk")
     // Equal("% You can change the MIDI instruments below to anything on this list:\n% (http://lilypond.org/doc/v2.18/documentation/notation/midi-instruments)\n\n\n\\score {\n   <<\n\n   >>\n   \\layout {}\n\n% MUSIC BLOCKS CODE\n% Below is the code for the Music Blocks project that generated this Lilypond file.\n\n%{\n\n[]\n%}\n\n% You can change the MIDI instruments below to anything on this list:\n% (http://lilypond.org/doc/v2.18/documentation/notation/midi-instruments)\n\n\n\\score {\n   <<\n\n   >>\n   \\layout {}\n\n% MUSIC BLOCKS CODE\n% Below is the code for the Music Blocks project that generated this Lilypond file.\n%{\n\n[]\n%}\n\n");
   })
 })
 
-describe('add', () => {
-  test('when both are positive', () => {
-    expect(lily.add(5,3)).toEqual(8)
+describe('getStringArr', () => {
+  test('', () => {
+    expect(lily.getStringArr()).toStrictEqual(["0", "1", "2", "3"])
   })
+})
 
-  test('when both are negative', () => {
-    expect(lily.add(-5,-7)).toEqual(-12)
+describe('replace_instr', () => {
+  test('', () => {
+    expect(lily.replace_instr("/ / /")).toBe("///")
+    expect(lily.replace_instr("// . // //")).toBe("//////")
+    expect(lily.replace_instr("..")).toBe(".")
+    expect(lily.replace_instr("test")).toBe("test")
   })
+})
 
-  test('when one is positive one is negative', () => {
-    expect(lily.add(5,-5)).toEqual(0)
+describe('combine', () => {
+  test('', () => {
+    expect(lily.combine("test")).toContain('" \\')
+    expect(lily.combine("test")).toContain('\n')
+  })
+})
+
+describe('combine', () => {
+  test('', () => {
+    expect(lily.combine2("test")).toContain('      \\')
+    expect(lily.combine2("test")).toContain('Voice\n')
+  })
+})
+
+describe('getNoteCount', () => {
+  test('', () => {
+    expect(lily.getNoteCount([1,2,3,4])).toBe(0)
+    expect(lily.getNoteCount([1,2],[3,4],[5,6])).toBe(0)
+    // expect(lily.getNoteCount([[1],[2]],[[3]],[[5],[6]])).toBe(0)
+    expect(lily.getNoteCount([ [ [1, 2], [3, 4] ], [ [1, 2], [3, 4] ] ])).toBe(4)
+    expect(lily.getNoteCount([ [ ["R", "R"], ["R", 4] ], [ ["R", 2], [3, 4] ] ])).toBe(1)
+  })
+})
+
+describe('getOctaveTotal', () => {
+  test('', () => {
+    expect(lily.getOctaveTotal([1,2,3,4])).toBe(0)
+    expect(lily.getOctaveTotal([1,2],[3,4],[5,6])).toBe(0)
+    expect(lily.getOctaveTotal([ [ ["43", "2"], [3, 4] ], [ ["1", "2"], [3, 4] ] ])).toBe(8)
+    expect(lily.getOctaveTotal([ [ ["43", "2"], [3, 4] ], [ ["1", "2"], [3, 4] ], ["1", "2"] ])).toBe(9)
+    expect(lily.getOctaveTotal([ [ ["R", 2], [3, 4] ], [ ["R", 2], [3, 4] ] ])).toBe(4)
+  })
+})
+
+describe('get_temparr', () => {
+  test('', () => {
+    expect(lily.get_temparr("test")).toStrictEqual([[1],[2],[3],[4],[5]])
   })
 })
